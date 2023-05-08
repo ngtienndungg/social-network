@@ -10,7 +10,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    public static final String BASE_URL = "http://192.168.56.1/social-network-api/public/";
+    public static final String BASE_URL = "http://192.168.56.1/social-network-api/";
     private static Retrofit retrofit;
     public static Retrofit getRetrofit()
     {

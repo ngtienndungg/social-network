@@ -1,17 +1,22 @@
 package com.example.social_network.feature.auth;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.social_network.MainActivity;
 import com.example.social_network.R;
+import com.example.social_network.model.auth.AuthResponse;
+import com.example.social_network.utils.ViewModelFactory;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -25,20 +30,29 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 100;
     private static final String TAG = "LoginActivity";
-    GoogleSignInClient mGoogleSignInClient;
+    private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
+    SignInButton btSignIn;
+    LoginViewModel viewModel;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        SignInButton btSignIn = findViewById(R.id.btGoogleLogin);
+        viewModel = new ViewModelProvider(this, new ViewModelFactory()).get(LoginViewModel.class);
+        btSignIn = findViewById(R.id.btGoogleLogin);
+
+        progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setTitle("Signing in..");
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -84,6 +98,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
+        progressDialog.show();
+        btSignIn.setVisibility(View.GONE);
+
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -91,6 +108,32 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Login Success");
+                            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                                @Override
+                                public void onComplete(@NonNull Task<String> task) {
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    viewModel.login(new UserInfo(
+                                            user.getUid(),
+                                            user.getDisplayName(),
+                                            user.getEmail(),
+                                            user.getPhotoUrl().toString(),
+                                            "",
+                                            task.getResult()
+                                    )).observe(LoginActivity.this, new Observer<AuthResponse>() {
+                                        @Override
+                                        public void onChanged(AuthResponse authResponse) {
+                                            progressDialog.hide();
+                                            Toast.makeText(LoginActivity.this, authResponse.getMessage(),Toast.LENGTH_SHORT).show();
+                                            if (authResponse.getAuth()!=null) {
+                                                updateUI(user);
+                                            } else {
+                                                FirebaseAuth.getInstance().signOut();
+                                                updateUI(null);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                         } else {
@@ -104,8 +147,21 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            Log.d(TAG,user.getDisplayName());
-            Log.d(TAG,user.getPhotoUrl().toString());
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+
+        }
+    }
+
+    public static class UserInfo {
+        String uid, name, email, profileUrl, coverUrl, userToken;
+
+        public UserInfo(String uid, String name, String email, String profileUrl, String coverUrl, String userToken) {
+            this.uid = uid;
+            this.name = name;
+            this.email = email;
+            this.profileUrl = profileUrl;
+            this.coverUrl = coverUrl;
+            this.userToken = userToken;
         }
     }
 }
