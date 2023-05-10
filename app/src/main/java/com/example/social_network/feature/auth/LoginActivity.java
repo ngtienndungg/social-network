@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.social_network.MainActivity;
+import com.example.social_network.feature.homepage.DashboardActivity;
 import com.example.social_network.R;
 import com.example.social_network.model.auth.AuthResponse;
 import com.example.social_network.utils.ViewModelFactory;
@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
 
         }
     }
