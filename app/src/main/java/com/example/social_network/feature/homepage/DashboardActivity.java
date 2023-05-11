@@ -14,12 +14,32 @@ import com.example.social_network.feature.homepage.friends.FriendsFragment;
 import com.example.social_network.feature.homepage.newsfeed.NewsFeedFragment;
 import com.example.social_network.feature.profile.ProfileActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class DashboardActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
     private FriendsFragment friendsFragment;
     private NewsFeedFragment newsFeedFragment;
+    private BottomNavigationView.OnItemSelectedListener selectedListener = new BottomNavigationView.OnItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.newsFeedFragment:
+                    setFragment(newsFeedFragment);
+                    return true;
+
+                case R.id.friendsFragment:
+                    setFragment(friendsFragment);
+                    return true;
+
+                case R.id.profileActivity:
+                    startActivity(new Intent(DashboardActivity.this, ProfileActivity.class).putExtra("uid", FirebaseAuth.getInstance().getUid()));
+                    return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,26 +53,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnItemSelectedListener(selectedListener);
     }
-
-    private BottomNavigationView.OnItemSelectedListener selectedListener = new BottomNavigationView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.newsFeedFragment:
-                        setFragment(newsFeedFragment);
-                        return true;
-
-                    case R.id.friendsFragment:
-                        setFragment(friendsFragment);
-                        return true;
-
-                    case R.id.profileActivity:
-                        startActivity(new Intent(DashboardActivity.this, ProfileActivity.class));
-                        return true;
-                }
-                return false;
-            }
-        };
 
     private void setFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

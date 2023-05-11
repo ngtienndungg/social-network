@@ -12,8 +12,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     public static final String BASE_URL = "http://192.168.56.1/social-network-api/";
     private static Retrofit retrofit;
-    public static Retrofit getRetrofit()
-    {
+
+    public static Retrofit getRetrofit() {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         if (BuildConfig.DEBUG)
             httpLoggingInterceptor.level(HttpLoggingInterceptor.Level.BODY);
@@ -21,10 +21,9 @@ public class ApiClient {
             httpLoggingInterceptor.level(HttpLoggingInterceptor.Level.NONE);
         OkHttpClient client = new OkHttpClient.Builder()
                 .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10,TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 .addInterceptor(httpLoggingInterceptor).build();
-        if (retrofit == null)
-        {
+        if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(client)

@@ -1,8 +1,8 @@
-package com.example.social_network.model.auth;
+package com.example.social_network.model.profile;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Auth {
+public class Profile {
 
     @SerializedName("profileUrl")
     private String profileUrl;
@@ -18,6 +18,9 @@ public class Auth {
 
     @SerializedName("name")
     private String name;
+
+    @SerializedName("state")
+    private int state;
 
     @SerializedName("email")
     private String email;
@@ -60,6 +63,14 @@ public class Auth {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     public String getEmail() {

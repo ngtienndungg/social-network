@@ -1,11 +1,11 @@
-package com.example.social_network.model.auth;
+package com.example.social_network.model.profile;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AuthResponse {
+public class ProfileResponse {
 
-    @SerializedName("auth")
-    private Auth auth;
+    @SerializedName("profile")
+    private Profile profile;
 
     @SerializedName("message")
     private String message;
@@ -13,17 +13,17 @@ public class AuthResponse {
     @SerializedName("status")
     private int status;
 
-    public AuthResponse(String message, int status) {
+    public ProfileResponse(String message, int status) {
         this.message = message;
         this.status = status;
     }
 
-    public Auth getAuth() {
-        return auth;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setAuth(Auth auth) {
-        this.auth = auth;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public String getMessage() {

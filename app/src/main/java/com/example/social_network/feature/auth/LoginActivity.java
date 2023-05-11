@@ -13,8 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.social_network.feature.homepage.DashboardActivity;
 import com.example.social_network.R;
+import com.example.social_network.feature.homepage.DashboardActivity;
 import com.example.social_network.model.auth.AuthResponse;
 import com.example.social_network.utils.ViewModelFactory;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -36,11 +36,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 100;
     private static final String TAG = "LoginActivity";
-    private GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuth mAuth;
     SignInButton btSignIn;
     LoginViewModel viewModel;
     ProgressDialog progressDialog;
+    private GoogleSignInClient mGoogleSignInClient;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +123,8 @@ public class LoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onChanged(AuthResponse authResponse) {
                                             progressDialog.hide();
-                                            Toast.makeText(LoginActivity.this, authResponse.getMessage(),Toast.LENGTH_SHORT).show();
-                                            if (authResponse.getAuth()!=null) {
+                                            Toast.makeText(LoginActivity.this, authResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                            if (authResponse.getAuth() != null) {
                                                 updateUI(user);
                                             } else {
                                                 FirebaseAuth.getInstance().signOut();
