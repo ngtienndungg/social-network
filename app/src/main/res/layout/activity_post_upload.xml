@@ -21,7 +21,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
-                android:entries="@array/privacy_level" />
+                android:entries="@array/privacy_level"
+                android:layout_marginEnd="15dp"
+                android:layout_toStartOf="@id/btPost" />
 
             <TextView
                 android:id="@+id/btPost"
@@ -51,8 +53,8 @@
                 android:layout_height="80dp"
                 android:id="@+id/cardView"
                 app:cardCornerRadius="40dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="8dp">
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="16dp">
 
                 <ImageView
                     android:id="@+id/ivAvatar"
