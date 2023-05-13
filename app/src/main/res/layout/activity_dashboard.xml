@@ -57,9 +57,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:theme="@style/Theme.Socialnetwork"
+        android:theme="@style/Theme.SocialNetwork"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_bottom_nav" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fabCreate"
+        app:layout_constraintBottom_toTopOf="@id/bnvNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/purple_500"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        android:src="@drawable/ic_create"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
