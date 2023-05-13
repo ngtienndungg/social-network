@@ -26,4 +26,6 @@
     </string-array>
     <string name="less_than_100">Should be less than 100 characters</string>
     <string name="what_on_your_mind">What\'s on your mind?</string>
+    <string name="write_your_status">Please write your status</string>
+    <string name="uploading_post">Uploading post</string>
 </resources>

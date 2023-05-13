@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setCancelable(false);
-        progressDialog.setTitle("Signing in..");
+        progressDialog.setTitle(R.string.login);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))

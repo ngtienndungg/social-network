@@ -8,6 +8,7 @@ import com.example.social_network.data.Repository;
 import com.example.social_network.data.remote.ApiClient;
 import com.example.social_network.data.remote.ApiService;
 import com.example.social_network.feature.auth.LoginViewModel;
+import com.example.social_network.feature.postupload.PostUploadViewModel;
 import com.example.social_network.feature.profile.ProfileViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
@@ -26,6 +27,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new LoginViewModel(repository);
         } else if (modelClass.isAssignableFrom(ProfileViewModel.class)) {
             return (T) new ProfileViewModel(repository);
+        } else if (modelClass.isAssignableFrom(PostUploadViewModel.class)) {
+            return (T) new PostUploadViewModel(repository);
         }
         throw new IllegalArgumentException("View Model is not founded");
     }

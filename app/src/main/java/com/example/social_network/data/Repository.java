@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.social_network.data.remote.ApiError;
 import com.example.social_network.data.remote.ApiService;
 import com.example.social_network.feature.auth.LoginActivity;
+import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.auth.AuthResponse;
 import com.example.social_network.model.profile.ProfileResponse;
 import com.google.gson.Gson;
@@ -13,9 +14,11 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Multipart;
 
 public class Repository {
     private static Repository instance = null;
@@ -91,5 +94,36 @@ public class Repository {
             }
         });
         return userInfo;
+    }
+    public LiveData<GeneralResponse> uploadPost(MultipartBody multipartBody) {
+        MutableLiveData<GeneralResponse> postUpload = new MutableLiveData<>();
+        Call<GeneralResponse> call = apiService.uploadpost(multipartBody);
+        call.enqueue(new Callback<GeneralResponse>() {
+            @Override
+            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+                if (response.isSuccessful()) {
+                    postUpload.postValue(response.body());
+                }
+                else {
+                    Gson gson = new Gson();
+                    GeneralResponse generalResponse = null;
+                    try {
+                        generalResponse = gson.fromJson(response.errorBody().string(), GeneralResponse.class);
+                    } catch (IOException e) {
+                        ApiError.ErrorMessage errorMessage = ApiError.getErrorFromException(e);
+                        generalResponse = new GeneralResponse(errorMessage.message, errorMessage.status);
+                    }
+                    postUpload.postValue(generalResponse);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeneralResponse> call, Throwable t) {
+                ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
+                GeneralResponse generalResponse= new GeneralResponse(errorMessage.message, errorMessage.status);
+                postUpload.postValue(generalResponse);
+            }
+        });
+        return postUpload;
     }
 }
