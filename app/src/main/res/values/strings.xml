@@ -32,4 +32,6 @@
     <string name="option_change_cover">Change cover image</string>
     <string name="option_profile_image">Change profile image</string>
     <string name="image_picker_failed">"Image picker failed"</string>
+    <string name="option_view_cover">View cover image</string>
+    <string name="option_view_avatar">View profile image</string>
 </resources>

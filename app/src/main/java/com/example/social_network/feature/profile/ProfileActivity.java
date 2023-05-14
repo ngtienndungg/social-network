@@ -1,12 +1,15 @@
 package com.example.social_network.feature.profile;
 
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,6 +28,7 @@ import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.example.social_network.R;
 import com.example.social_network.data.remote.ApiClient;
+import com.example.social_network.feature.fullimage.FullImageActivity;
 import com.example.social_network.feature.postupload.PostUploadActivity;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.profile.ProfileResponse;
@@ -42,7 +46,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
 
     private String uid = "", avatarUrl = "", coverUrl = "";
     private int current_state = 0;
@@ -151,7 +155,11 @@ public class ProfileActivity extends AppCompatActivity {
                 btProfileOption.setEnabled(false);
 
                 if (current_state == 5) {
-                    CharSequence[] options = new CharSequence[] {getResources().getString(R.string.option_change_cover), getResources().getString(R.string.option_profile_image)};
+                    CharSequence[] options = new CharSequence[] {
+                            getResources().getString(R.string.option_change_cover),
+                            getResources().getString(R.string.option_profile_image),
+                            getResources().getString(R.string.option_view_cover),
+                            getResources().getString(R.string.option_view_avatar)};
                     AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
                     builder.setTitle(R.string.choose_options);
                     builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -165,12 +173,34 @@ public class ProfileActivity extends AppCompatActivity {
                                 isCoverImage = false;
                                 selectImage();
                             }
+                            else if (which==2) {
+                                viewFullImage(ivCover, coverUrl);
+                            }
+                            else if (which==3) {
+                                viewFullImage(ivAvatar, avatarUrl);
+                            }
                         }
                     });
-                    builder.show();
+                    AlertDialog dialog = builder.create();
+                    dialog.setOnDismissListener(ProfileActivity.this);
+                    dialog.show();
                 }
             }
         });
+    }
+
+    private void viewFullImage(ImageView imageView, String imageUrl) {
+        Intent intent = new Intent(ProfileActivity.this, FullImageActivity.class);
+        intent.putExtra("imageUrl", imageUrl);
+        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP) {
+            Pair[] pairs = new Pair[1];
+            pairs[0] = new Pair<View, String>(imageView, imageUrl);
+            ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(ProfileActivity.this, pairs);
+            startActivity(intent, activityOptions.toBundle());
+        }
+        else {
+            startActivity(intent);
+        }
     }
 
     private void selectImage() {
@@ -216,5 +246,10 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        btProfileOption.setEnabled(true);
     }
 }
