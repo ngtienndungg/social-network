@@ -26,4 +26,11 @@
         <item name="android:colorBackground">@color/white</item>
     </style>
 
+    <style name="searchViewTheme" parent="TextAppearance.Material3.SearchView">
+        <item name="android:textColorPrimary">#FFF</item>
+        <item name="android:textColorHint">#FFF</item>
+        <item name="tint">#FFF</item>
+        <item name="android:gravity">end</item>
+    </style>
+
 </resources>
