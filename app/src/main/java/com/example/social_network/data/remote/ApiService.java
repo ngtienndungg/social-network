@@ -19,7 +19,11 @@ public interface ApiService {
     Call<AuthResponse> login(@Body LoginActivity.UserInfo userInfo);
 
     @POST("uploadpost")
-    Call<GeneralResponse> uploadpost(@Body MultipartBody body);
+    Call<GeneralResponse> uploadPost(@Body MultipartBody body);
+
+    @POST("uploadimage")
+    Call<GeneralResponse> uploadImage(@Body MultipartBody body);
+
 
     @GET("loadprofileinfo")
     Call<ProfileResponse> fetchProfileInfo(@QueryMap Map<String, String> params);

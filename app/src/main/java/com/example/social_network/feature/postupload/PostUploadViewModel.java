@@ -15,7 +15,7 @@ public class PostUploadViewModel extends ViewModel {
         this.repository = repository;
     }
 
-    public LiveData<GeneralResponse> uploadPost(MultipartBody multipartBody) {
-        return this.repository.uploadPost(multipartBody);
+    public LiveData<GeneralResponse> uploadPost(MultipartBody multipartBody, Boolean isCoverOrProfileImage) {
+        return this.repository.uploadPost(multipartBody, isCoverOrProfileImage);
     }
 }

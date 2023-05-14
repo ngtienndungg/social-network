@@ -10,6 +10,9 @@ public class GeneralResponse {
     @SerializedName("status")
     private int status;
 
+    @SerializedName("extra")
+    private String extra;
+
     public String getMessage() {
         return message;
     }
@@ -26,7 +29,15 @@ public class GeneralResponse {
         this.status = status;
     }
 
-	public GeneralResponse(String message, int status) {
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
+
+    public GeneralResponse(String message, int status) {
 		this.message = message;
 		this.status = status;
 	}

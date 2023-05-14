@@ -106,7 +106,7 @@ public class PostUploadActivity extends AppCompatActivity {
                 }
                 MultipartBody multipartBody = builder.build();
 
-                viewModel.uploadPost(multipartBody).observe(PostUploadActivity.this, new Observer<GeneralResponse>() {
+                viewModel.uploadPost(multipartBody, false).observe(PostUploadActivity.this, new Observer<GeneralResponse>() {
                     @Override
                     public void onChanged(GeneralResponse generalResponse) {
                         progressDialog.hide();

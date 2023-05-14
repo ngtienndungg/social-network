@@ -95,9 +95,15 @@ public class Repository {
         });
         return userInfo;
     }
-    public LiveData<GeneralResponse> uploadPost(MultipartBody multipartBody) {
+    public LiveData<GeneralResponse> uploadPost(MultipartBody multipartBody, Boolean isCoverOrProfileImage) {
         MutableLiveData<GeneralResponse> postUpload = new MutableLiveData<>();
-        Call<GeneralResponse> call = apiService.uploadpost(multipartBody);
+        Call<GeneralResponse> call = null;
+        if (isCoverOrProfileImage) {
+            call = apiService.uploadImage(multipartBody);
+        }
+        else {
+            call = apiService.uploadPost(multipartBody);
+        }
         call.enqueue(new Callback<GeneralResponse>() {
             @Override
             public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
