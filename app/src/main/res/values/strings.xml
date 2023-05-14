@@ -34,4 +34,6 @@
     <string name="image_picker_failed">"Image picker failed"</string>
     <string name="option_view_cover">View cover image</string>
     <string name="option_view_avatar">View profile image</string>
+    <string name="search_someone">Let\'s search someone</string>
+    <string name="search_people">Search people</string>
 </resources>

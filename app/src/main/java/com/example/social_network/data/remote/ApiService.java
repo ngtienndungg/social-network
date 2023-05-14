@@ -4,6 +4,7 @@ import com.example.social_network.feature.auth.LoginActivity;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.auth.AuthResponse;
 import com.example.social_network.model.profile.ProfileResponse;
+import com.example.social_network.model.search.SearchResponse;
 
 import java.util.Map;
 
@@ -27,4 +28,7 @@ public interface ApiService {
 
     @GET("loadprofileinfo")
     Call<ProfileResponse> fetchProfileInfo(@QueryMap Map<String, String> params);
+
+    @GET("search")
+    Call<SearchResponse> search(@QueryMap Map<String, String> params);
 }

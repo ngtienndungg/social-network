@@ -10,6 +10,7 @@ import com.example.social_network.data.remote.ApiService;
 import com.example.social_network.feature.auth.LoginViewModel;
 import com.example.social_network.feature.postupload.PostUploadViewModel;
 import com.example.social_network.feature.profile.ProfileViewModel;
+import com.example.social_network.feature.search.SearchViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private final Repository repository;
@@ -29,7 +30,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new ProfileViewModel(repository);
         } else if (modelClass.isAssignableFrom(PostUploadViewModel.class)) {
             return (T) new PostUploadViewModel(repository);
+        } else if (modelClass.isAssignableFrom(SearchViewModel.class)) {
+            return (T) new SearchViewModel(repository);
         }
-        throw new IllegalArgumentException("View Model is not founded");
+            throw new IllegalArgumentException("View Model is not founded");
     }
 }

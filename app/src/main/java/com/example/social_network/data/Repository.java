@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.social_network.data.remote.ApiError;
 import com.example.social_network.data.remote.ApiService;
 import com.example.social_network.feature.auth.LoginActivity;
+import com.example.social_network.feature.search.SearchViewModel;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.auth.AuthResponse;
 import com.example.social_network.model.profile.ProfileResponse;
+import com.example.social_network.model.search.SearchResponse;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -131,5 +133,35 @@ public class Repository {
             }
         });
         return postUpload;
+    }
+    public LiveData<SearchResponse> search(Map<String, String> params) {
+        MutableLiveData<SearchResponse> searchInfo = new MutableLiveData<>();
+        Call<SearchResponse> call = apiService.search(params);
+        call.enqueue(new Callback<SearchResponse>() {
+            @Override
+            public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
+                if (response.isSuccessful()) {
+                    searchInfo.postValue(response.body());
+                } else {
+                    Gson gson = new Gson();
+                    SearchResponse searchResponse = null;
+                    try {
+                        searchResponse = gson.fromJson(response.errorBody().string(), SearchResponse.class);
+                    } catch (IOException e) {
+                        ApiError.ErrorMessage errorMessage = ApiError.getErrorFromException(e);
+                        searchResponse = new SearchResponse(errorMessage.message, errorMessage.status);
+                    }
+                    searchInfo.postValue(searchResponse);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchResponse> call, Throwable t) {
+                ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
+                SearchResponse searchResponse = new SearchResponse(errorMessage.message, errorMessage.status);
+                searchInfo.postValue(searchResponse);
+            }
+        });
+        return searchInfo;
     }
 }
