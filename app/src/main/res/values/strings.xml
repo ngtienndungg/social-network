@@ -17,7 +17,6 @@
     <string name="you_are_friends">You are friends</string>
     <string name="cancel_request">Cancel request</string>
     <string name="accept_request">Accept request</string>
-    <string name="add_friend">Add friend</string>
     <string name="post">Post</string>
     <string-array name="privacy_level">
         <item>Fiends</item>
@@ -36,8 +35,12 @@
     <string name="option_view_avatar">View profile image</string>
     <string name="search_someone">Let\'s search someone</string>
     <string name="search_people">Search people</string>
-    <string name="send_request" >Send friend request</string>
+    <string name="add_friend" >Add friend</string>
     <string name="error">Error</string>
     <string name="please_wait">Please wait</string>
     <string name="unfriend">Unfriend</string>
+    <string name="friend_requests">Friend requests</string>
+    <string name="add_some_friends">Let\'s add some friends</string>
+    <string name="person_name">Person name</string>
+    <string name="accept">Accept</string>
 </resources>

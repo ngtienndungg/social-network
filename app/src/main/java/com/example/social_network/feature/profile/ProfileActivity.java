@@ -200,7 +200,7 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                     dialog.show();
                 } else if (current_state == 4) {
                     CharSequence[] options = new CharSequence[]{
-                            getResources().getString(R.string.send_request)
+                            getResources().getString(R.string.add_friend)
                     };
                     AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
                     builder.setTitle(R.string.choose_options);
@@ -293,11 +293,11 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                         btProfileOption.setText(R.string.you_are_friends);
                     } else if (current_state == 2) {
                         current_state = 4;
-                        btProfileOption.setText(R.string.send_request);
+                        btProfileOption.setText(R.string.add_friend);
                     }
                     else if (current_state == 1) {
                         current_state = 4;
-                        btProfileOption.setText(R.string.send_request);
+                        btProfileOption.setText(R.string.add_friend);
                     }
                 }
                 else {

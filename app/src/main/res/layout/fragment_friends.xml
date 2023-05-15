@@ -1,15 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".feature.homepage.friends.FriendsFragment">
+    tools:context=".feature.homepage.friends.FriendsFragment"
+    android:orientation="vertical"
+    android:layout_margin="8dp">
 
-    <!-- TODO: Update blank fragment layout -->
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/tvRequestTitle"
+       android:textAlignment="center"
+       android:textColor="@color/black"
+       android:textSize="15sp"
+       android:visibility="gone"
+       android:gravity="center_horizontal"
+       android:textStyle="bold"
+       android:text="@string/friend_requests"
+       android:layout_marginTop="5dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rvFriendRequest"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvFriendTitle"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:visibility="gone"
+        android:text="@string/friends"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="5dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rvFriend"
+            android:layout_marginTop="5dp"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/friends" />
-
-</FrameLayout>
+        android:id="@+id/tvDefault"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:visibility="gone"
+        android:textStyle="bold"
+        android:text="@string/friends"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"/>
+</LinearLayout>

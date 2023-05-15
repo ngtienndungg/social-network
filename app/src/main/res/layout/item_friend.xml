@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="5dp"
+    android:layout_marginHorizontal="5dp"
+    app:cardElevation="2dp">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="5dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/wrapper"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginHorizontal="10dp"
+            app:cardCornerRadius="25dp">
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ivProfile"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_profile_placeholder"/>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvProfileName"
+            android:layout_centerInParent="true"
+            android:layout_toEndOf="@id/wrapper"
+            android:paddingHorizontal="16dp"
+            android:text="@string/person_name"
+            android:textAllCaps="false"
+            android:textSize="14dp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btAccept"
+            android:layout_centerInParent="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/white"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:text="@string/accept"
+            android:textColor="@color/black"/>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
