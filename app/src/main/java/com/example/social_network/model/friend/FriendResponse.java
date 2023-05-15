@@ -36,4 +36,9 @@ public class FriendResponse{
 	public int getStatus(){
 		return status;
 	}
+
+	public FriendResponse(String message, int status) {
+		this.message = message;
+		this.status = status;
+	}
 }

@@ -10,6 +10,8 @@ import com.example.social_network.feature.profile.ProfileActivity;
 import com.example.social_network.feature.search.SearchViewModel;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.auth.AuthResponse;
+import com.example.social_network.model.friend.Friend;
+import com.example.social_network.model.friend.FriendResponse;
 import com.example.social_network.model.profile.ProfileResponse;
 import com.example.social_network.model.search.SearchResponse;
 import com.google.gson.Gson;
@@ -193,6 +195,37 @@ public class Repository {
                 ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
                 GeneralResponse generalResponse= new GeneralResponse(errorMessage.message, errorMessage.status);
                 searchInfo.postValue(generalResponse);
+            }
+        });
+        return searchInfo;
+    }
+
+    public MutableLiveData<FriendResponse> loadFriends(String uid) {
+        MutableLiveData<FriendResponse> searchInfo = new MutableLiveData<>();
+        Call<FriendResponse> call = apiService.loadFriends(uid);
+        call.enqueue(new Callback<FriendResponse>() {
+            @Override
+            public void onResponse(Call<FriendResponse> call, Response<FriendResponse> response) {
+                if (response.isSuccessful()) {
+                    searchInfo.postValue(response.body());
+                } else {
+                    Gson gson = new Gson();
+                    FriendResponse friendResponse = null;
+                    try {
+                        friendResponse = gson.fromJson(response.errorBody().string(), FriendResponse.class);
+                    } catch (IOException e) {
+                        ApiError.ErrorMessage errorMessage = ApiError.getErrorFromException(e);
+                        friendResponse = new FriendResponse(errorMessage.message, errorMessage.status);
+                    }
+                    searchInfo.postValue(friendResponse);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FriendResponse> call, Throwable t) {
+                ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
+                FriendResponse friendResponse = new FriendResponse(errorMessage.message, errorMessage.status);
+                searchInfo.postValue(friendResponse);
             }
         });
         return searchInfo;
