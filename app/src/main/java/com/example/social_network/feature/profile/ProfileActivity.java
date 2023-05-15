@@ -234,6 +234,43 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                     AlertDialog dialog = builder.create();
                     dialog.setOnDismissListener(ProfileActivity.this);
                     dialog.show();
+                } else if (current_state == 2) {
+                    CharSequence[] options = new CharSequence[]{
+                            getResources().getString(R.string.cancel_request)
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                    builder.setTitle(R.string.choose_options);
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == 0) {
+                                isCoverImage = true;
+                                performAction();
+                            }
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.setOnDismissListener(ProfileActivity.this);
+                    dialog.show();
+                }
+                else if (current_state == 1) {
+                    CharSequence[] options = new CharSequence[]{
+                            getResources().getString(R.string.unfriend)
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                    builder.setTitle(R.string.choose_options);
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == 0) {
+                                isCoverImage = true;
+                                performAction();
+                            }
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.setOnDismissListener(ProfileActivity.this);
+                    dialog.show();
                 }
             }
         });
@@ -254,11 +291,18 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                     } else if (current_state == 3) {
                         current_state = 1;
                         btProfileOption.setText(R.string.you_are_friends);
+                    } else if (current_state == 2) {
+                        current_state = 4;
+                        btProfileOption.setText(R.string.send_request);
                     }
-                    else {
-                        btProfileOption.setEnabled(false);
-                        btProfileOption.setText(R.string.error);
+                    else if (current_state == 1) {
+                        current_state = 4;
+                        btProfileOption.setText(R.string.send_request);
                     }
+                }
+                else {
+                    btProfileOption.setEnabled(false);
+                    btProfileOption.setText(R.string.error);
                 }
             }
         });

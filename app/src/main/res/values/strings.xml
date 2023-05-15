@@ -39,4 +39,5 @@
     <string name="send_request" >Send friend request</string>
     <string name="error">Error</string>
     <string name="please_wait">Please wait</string>
+    <string name="unfriend">Unfriend</string>
 </resources>
