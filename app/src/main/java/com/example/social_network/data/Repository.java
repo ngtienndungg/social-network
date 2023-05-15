@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.social_network.data.remote.ApiError;
 import com.example.social_network.data.remote.ApiService;
 import com.example.social_network.feature.auth.LoginActivity;
+import com.example.social_network.feature.profile.ProfileActivity;
 import com.example.social_network.feature.search.SearchViewModel;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.auth.AuthResponse;
@@ -134,6 +135,7 @@ public class Repository {
         });
         return postUpload;
     }
+
     public LiveData<SearchResponse> search(Map<String, String> params) {
         MutableLiveData<SearchResponse> searchInfo = new MutableLiveData<>();
         Call<SearchResponse> call = apiService.search(params);
@@ -160,6 +162,37 @@ public class Repository {
                 ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
                 SearchResponse searchResponse = new SearchResponse(errorMessage.message, errorMessage.status);
                 searchInfo.postValue(searchResponse);
+            }
+        });
+        return searchInfo;
+    }
+
+    public LiveData<GeneralResponse> performOperation(ProfileActivity.PerformAction performAction) {
+        MutableLiveData<GeneralResponse> searchInfo = new MutableLiveData<>();
+        Call<GeneralResponse> call = apiService.performAction(performAction);
+        call.enqueue(new Callback<GeneralResponse>() {
+            @Override
+            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+                if (response.isSuccessful()) {
+                    searchInfo.postValue(response.body());
+                } else {
+                    Gson gson = new Gson();
+                    GeneralResponse generalResponse = null;
+                    try {
+                        generalResponse = gson.fromJson(response.errorBody().string(), GeneralResponse.class);
+                    } catch (IOException e) {
+                        ApiError.ErrorMessage errorMessage = ApiError.getErrorFromException(e);
+                        generalResponse = new GeneralResponse(errorMessage.message, errorMessage.status);
+                    }
+                    searchInfo.postValue(generalResponse);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeneralResponse> call, Throwable t) {
+                ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
+                GeneralResponse generalResponse= new GeneralResponse(errorMessage.message, errorMessage.status);
+                searchInfo.postValue(generalResponse);
             }
         });
         return searchInfo;

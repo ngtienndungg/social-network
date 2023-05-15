@@ -81,6 +81,7 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(R.string.loading);
         progressDialog.setCancelable(false);
+        progressDialog.setMessage(getResources().getString(R.string.please_wait));
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);
@@ -105,6 +106,7 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
     }
 
     private void fetchProfileInfo() {
+        progressDialog.show();
         Map<String, String> params = new HashMap<>();
         params.put("userId", FirebaseAuth.getInstance().getUid());
         if (current_state == 5) {
@@ -117,6 +119,7 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
         viewModel.fetchProfileInfo(params).observe(this, new Observer<ProfileResponse>() {
             @Override
             public void onChanged(ProfileResponse profileResponse) {
+                progressDialog.hide();
                 if (profileResponse.getStatus() == 200) {
                     collapsingToolbarLayout.setTitle(profileResponse.getProfile().getName());
                     avatarUrl = profileResponse.getProfile().getProfileUrl();
@@ -169,7 +172,7 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                 btProfileOption.setEnabled(false);
 
                 if (current_state == 5) {
-                    CharSequence[] options = new CharSequence[] {
+                    CharSequence[] options = new CharSequence[]{
                             getResources().getString(R.string.option_change_cover),
                             getResources().getString(R.string.option_profile_image),
                             getResources().getString(R.string.option_view_cover),
@@ -179,18 +182,15 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                     builder.setItems(options, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (which==0) {
+                            if (which == 0) {
                                 isCoverImage = true;
                                 selectImage();
-                            }
-                            else if (which==1) {
+                            } else if (which == 1) {
                                 isCoverImage = false;
                                 selectImage();
-                            }
-                            else if (which==2) {
+                            } else if (which == 2) {
                                 viewFullImage(ivCover, coverUrl);
-                            }
-                            else if (which==3) {
+                            } else if (which == 3) {
                                 viewFullImage(ivAvatar, avatarUrl);
                             }
                         }
@@ -198,6 +198,46 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                     AlertDialog dialog = builder.create();
                     dialog.setOnDismissListener(ProfileActivity.this);
                     dialog.show();
+                } else if (current_state == 4) {
+                    CharSequence[] options = new CharSequence[]{
+                            getResources().getString(R.string.send_request)
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                    builder.setTitle(R.string.choose_options);
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == 0) {
+                                isCoverImage = true;
+                                performAction();
+                            }
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.setOnDismissListener(ProfileActivity.this);
+                    dialog.show();
+                }
+            }
+        });
+    }
+
+    private void performAction() {
+        progressDialog.show();
+        viewModel.performAction(new PerformAction(current_state + "", FirebaseAuth.getInstance().getUid(), uid)).observe(this, new Observer<GeneralResponse>() {
+            @Override
+            public void onChanged(GeneralResponse generalResponse) {
+                progressDialog.hide();
+                Toast.makeText(ProfileActivity.this, generalResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                if (generalResponse.getStatus() == 200) {
+                    btProfileOption.setEnabled(true);
+                    if (current_state == 4) {
+                        current_state = 2;
+                        btProfileOption.setText(R.string.cancel_request);
+                    }
+                    else {
+                        btProfileOption.setEnabled(false);
+                        btProfileOption.setText(R.string.error);
+                    }
                 }
             }
         });
@@ -266,4 +306,15 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
     public void onDismiss(DialogInterface dialog) {
         btProfileOption.setEnabled(true);
     }
+
+    public static class PerformAction {
+        String operationType, uid, profileId;
+
+        public PerformAction(String operationType, String uid, String profileId) {
+            this.operationType = operationType;
+            this.uid = uid;
+            this.profileId = profileId;
+        }
+    }
 }
+

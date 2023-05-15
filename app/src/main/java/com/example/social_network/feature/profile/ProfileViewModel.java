@@ -23,6 +23,10 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public LiveData<GeneralResponse> uploadPost(MultipartBody multipartBody, Boolean isCoverOrProfileImage) {
-        return this.repository.uploadPost(multipartBody, isCoverOrProfileImage);
+        return repository.uploadPost(multipartBody, isCoverOrProfileImage);
+    }
+
+    public LiveData<GeneralResponse> performAction(ProfileActivity.PerformAction performAction) {
+        return repository.performOperation(performAction);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.social_network.data.remote;
 
 import com.example.social_network.feature.auth.LoginActivity;
+import com.example.social_network.feature.profile.ProfileActivity;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.auth.AuthResponse;
 import com.example.social_network.model.profile.ProfileResponse;
@@ -31,4 +32,7 @@ public interface ApiService {
 
     @GET("search")
     Call<SearchResponse> search(@QueryMap Map<String, String> params);
+
+    @POST("performaction")
+    Call<GeneralResponse> performAction(@Body ProfileActivity.PerformAction performAction);
 }

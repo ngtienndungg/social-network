@@ -36,4 +36,7 @@
     <string name="option_view_avatar">View profile image</string>
     <string name="search_someone">Let\'s search someone</string>
     <string name="search_people">Search people</string>
+    <string name="send_request" >Send friend request</string>
+    <string name="error">Error</string>
+    <string name="please_wait">Please wait</string>
 </resources>
