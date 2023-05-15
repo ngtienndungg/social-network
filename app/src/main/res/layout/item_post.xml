@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginTop="8dp"
+    android:elevation="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rlWrapperPost"
+            android:background="@color/white">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/ivProfile"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_profile_placeholder"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvName"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@id/ivProfile"
+                android:text="@string/name"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvDate"
+                android:layout_toEndOf="@id/ivProfile"
+                android:text="@string/date"
+                android:layout_below="@id/tvName"/>
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:id="@+id/ivPrivacy"
+                android:src="@drawable/ic_only_me"
+                android:layout_marginStart="10dp"
+                android:layout_below="@id/tvName"
+                android:layout_toEndOf="@id/tvDate"/>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvPost"
+            android:layout_marginTop="5dp"
+            android:paddingStart="16dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:text="@string/post"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ivStatusImage"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_profile_placeholder"
+            android:adjustViewBounds="true"
+            android:layout_marginTop="5dp"
+            android:minWidth="300dp"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

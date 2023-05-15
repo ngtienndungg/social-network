@@ -12,6 +12,7 @@ import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.auth.AuthResponse;
 import com.example.social_network.model.friend.Friend;
 import com.example.social_network.model.friend.FriendResponse;
+import com.example.social_network.model.post.PostResponse;
 import com.example.social_network.model.profile.ProfileResponse;
 import com.example.social_network.model.search.SearchResponse;
 import com.google.gson.Gson;
@@ -229,5 +230,36 @@ public class Repository {
             }
         });
         return searchInfo;
+    }
+
+    public LiveData<PostResponse> getNewsfeed(Map<String, String> params) {
+        MutableLiveData<PostResponse> posts = new MutableLiveData<>();
+        Call<PostResponse> call = apiService.getNewsfeed(params);
+        call.enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+                if (response.isSuccessful()) {
+                    posts.postValue(response.body());
+                } else {
+                    Gson gson = new Gson();
+                    PostResponse postResponse = null;
+                    try {
+                        postResponse = gson.fromJson(response.errorBody().string(), PostResponse.class);
+                    } catch (IOException e) {
+                        ApiError.ErrorMessage errorMessage = ApiError.getErrorFromException(e);
+                        postResponse = new PostResponse(errorMessage.message, errorMessage.status);
+                    }
+                    posts.postValue(postResponse);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
+                PostResponse postResponse = new PostResponse(errorMessage.message, errorMessage.status);
+                posts.postValue(postResponse);
+            }
+        });
+        return posts;
     }
 }

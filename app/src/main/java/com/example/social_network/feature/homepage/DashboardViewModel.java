@@ -9,6 +9,9 @@ import com.example.social_network.data.Repository;
 import com.example.social_network.feature.profile.ProfileActivity;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.friend.FriendResponse;
+import com.example.social_network.model.post.PostResponse;
+
+import java.util.Map;
 
 public class DashboardViewModel extends ViewModel {
     private final Repository repository;
@@ -28,5 +31,9 @@ public class DashboardViewModel extends ViewModel {
 
     public LiveData<GeneralResponse> performAction(ProfileActivity.PerformAction performAction) {
         return repository.performOperation(performAction);
+    }
+
+    public LiveData<PostResponse> getNewsfeed(Map<String, String> params) {
+        return repository.getNewsfeed(params);
     }
 }

@@ -35,7 +35,7 @@
     <string name="option_view_avatar">View profile image</string>
     <string name="search_someone">Let\'s search someone</string>
     <string name="search_people">Search people</string>
-    <string name="add_friend" >Add friend</string>
+    <string name="add_friend">Add friend</string>
     <string name="error">Error</string>
     <string name="please_wait">Please wait</string>
     <string name="unfriend">Unfriend</string>
@@ -43,4 +43,6 @@
     <string name="add_some_friends">Let\'s add some friends</string>
     <string name="person_name">Person name</string>
     <string name="accept">Accept</string>
+    <string name="name">Name</string>
+    <string name="date">Date</string>
 </resources>

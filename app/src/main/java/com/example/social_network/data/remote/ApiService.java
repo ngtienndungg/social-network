@@ -5,6 +5,7 @@ import com.example.social_network.feature.profile.ProfileActivity;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.auth.AuthResponse;
 import com.example.social_network.model.friend.FriendResponse;
+import com.example.social_network.model.post.PostResponse;
 import com.example.social_network.model.profile.ProfileResponse;
 import com.example.social_network.model.search.SearchResponse;
 
@@ -28,6 +29,8 @@ public interface ApiService {
     @POST("uploadimage")
     Call<GeneralResponse> uploadImage(@Body MultipartBody body);
 
+    @GET("getnewsfeed")
+    Call<PostResponse> getNewsfeed(@QueryMap Map<String, String> params);
 
     @GET("loadprofileinfo")
     Call<ProfileResponse> fetchProfileInfo(@QueryMap Map<String, String> params);
