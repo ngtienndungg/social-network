@@ -30,6 +30,7 @@ import com.example.social_network.R;
 import com.example.social_network.data.remote.ApiClient;
 import com.example.social_network.feature.fullimage.FullImageActivity;
 import com.example.social_network.feature.postupload.PostUploadActivity;
+import com.example.social_network.feature.search.SearchActivity;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.profile.ProfileResponse;
 import com.example.social_network.utils.ViewModelFactory;
@@ -81,6 +82,16 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
         progressDialog.setTitle(R.string.loading);
         progressDialog.setCancelable(false);
 
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileActivity.super.onBackPressed();
+            }
+        });
+
         uid = getIntent().getStringExtra("uid");
 
         if (uid.equals(FirebaseAuth.getInstance().getUid())) {
@@ -98,6 +109,9 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
         params.put("userId", FirebaseAuth.getInstance().getUid());
         if (current_state == 5) {
             params.put("current_state", current_state + "");
+        }
+        else {
+            params.put("profileId", uid);
         }
 
         viewModel.fetchProfileInfo(params).observe(this, new Observer<ProfileResponse>() {

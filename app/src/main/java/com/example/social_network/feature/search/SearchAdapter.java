@@ -1,10 +1,12 @@
 package com.example.social_network.feature.search;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.social_network.R;
 import com.example.social_network.data.remote.ApiClient;
+import com.example.social_network.feature.profile.ProfileActivity;
 import com.example.social_network.model.search.User;
 
 import org.w3c.dom.Text;
@@ -75,7 +78,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         @Override
         public void onClick(View v) {
+            InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
+            context.startActivity(new Intent(context, ProfileActivity.class).putExtra("uid", userList.get(getAdapterPosition()).getUid()));
         }
     }
 }

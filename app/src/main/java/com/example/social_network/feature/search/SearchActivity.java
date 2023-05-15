@@ -52,10 +52,10 @@ public class SearchActivity extends AppCompatActivity {
         rvSearch.setLayoutManager(linearLayoutManager);
         rvSearch.setAdapter(adapter);
 
-        // searchView.setQueryHint("Search people");
+        searchView = findViewById(R.id.searchView);
+        searchView.setQueryHint(getResources().getString(R.string.search_people));
 
         toolbar = findViewById(R.id.toolbar);
-        searchView = findViewById(R.id.searchView);
         tvDefault = findViewById(R.id.tvDefault);
 
         setSupportActionBar(toolbar);
