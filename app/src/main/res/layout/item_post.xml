@@ -75,6 +75,76 @@
             android:adjustViewBounds="true"
             android:layout_marginTop="5dp"
             android:minWidth="300dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/tvReactionCounter"
+                android:gravity="center"
+                android:text="@string/_0_reaction"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp"/>
+        </LinearLayout>
+        
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="5dp"
+            android:background="@color/white"
+            android:layout_marginVertical="5dp"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <com.amrdeveloper.reactbutton.ReactButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/rbReaction"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/ivComment"
+                    android:gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_comment"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvComment"
+                    android:gravity="center"
+                    android:text="@string/_0_comment"
+                    android:textAlignment="center"
+                    android:textSize="15sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
+
+
 
 </androidx.cardview.widget.CardView>

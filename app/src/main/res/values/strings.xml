@@ -45,4 +45,6 @@
     <string name="accept">Accept</string>
     <string name="name">Name</string>
     <string name="date">Date</string>
+    <string name="_0_comment">0 comment</string>
+    <string name="_0_reaction">0 Reaction</string>
 </resources>
