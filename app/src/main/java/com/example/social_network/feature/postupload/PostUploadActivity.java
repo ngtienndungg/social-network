@@ -93,7 +93,7 @@ public class PostUploadActivity extends AppCompatActivity {
             String status = tiePostContent.getText().toString();
             String userId = FirebaseAuth.getInstance().getUid();
 
-            if (status.trim().length()>0) {
+            if (status.trim().length()>0 || isImageSelected) {
                 progressDialog.show();
                 MultipartBody.Builder builder = new MultipartBody.Builder();
                 builder.setType(MultipartBody.FORM);
@@ -112,8 +112,7 @@ public class PostUploadActivity extends AppCompatActivity {
                         progressDialog.hide();
                         Toast.makeText(PostUploadActivity.this, generalResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         if (generalResponse.getStatus()==200) {
-                            Intent intent = new Intent(PostUploadActivity.this, DashboardActivity.class);
-                            startActivity(intent);
+                            onBackPressed();
                         }
                     }
                 });

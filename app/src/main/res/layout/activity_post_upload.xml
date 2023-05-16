@@ -60,7 +60,8 @@
                     android:id="@+id/ivAvatar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/default_profile_placeholder"/>
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -71,7 +72,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
                 app:counterMaxLength="100"
-                app:helperTextEnabled="true"
+                app:helperTextEnabled="false"
                 app:counterEnabled="true"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 app:boxStrokeColor="@color/purple_500"

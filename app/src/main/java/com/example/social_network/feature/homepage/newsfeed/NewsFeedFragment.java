@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NewsFeedFragment extends Fragment {
+public class NewsFeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView rvNewsfeed;
     private DashboardViewModel viewModel;
@@ -41,6 +41,8 @@ public class NewsFeedFragment extends Fragment {
     private PostAdapter postAdapter;
     private List<Post> posts = new ArrayList<>();
     private Boolean isFirstLoading = true;
+    private int limit = 5;
+    private int offset = 0;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -62,12 +64,32 @@ public class NewsFeedFragment extends Fragment {
         rvNewsfeed = view.findViewById(R.id.rvNewsfeed);
         srlContent = view.findViewById(R.id.srlContent);
 
+        srlContent.setOnRefreshListener(this);
+
         postAdapter = new PostAdapter(context, posts);
 
         viewModel = new ViewModelProvider((FragmentActivity)context, new ViewModelFactory()).get(DashboardViewModel.class);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         rvNewsfeed.setLayoutManager(linearLayoutManager);
+
+        rvNewsfeed.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (isLastItemReached()) {
+                    offset+=limit;
+                    fetchNewsfeed();
+                }
+            }
+        });
+    }
+
+    private boolean isLastItemReached() {
+        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvNewsfeed.getLayoutManager();
+        int position = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+        int numberOfItems = postAdapter.getItemCount();
+        return (position >= numberOfItems - 1);
     }
 
     @Override
@@ -79,8 +101,8 @@ public class NewsFeedFragment extends Fragment {
     private void fetchNewsfeed() {
         Map<String, String> params = new HashMap<>();
         params.put("uid", FirebaseAuth.getInstance().getUid());
-        params.put("limit", "1");
-        params.put("offset", "0");
+        params.put("limit", limit + "");
+        params.put("offset", offset + "");
 
         ((DashboardActivity) getActivity()).showProgressBar();
 
@@ -89,7 +111,14 @@ public class NewsFeedFragment extends Fragment {
             public void onChanged(PostResponse postResponse) {
                 ((DashboardActivity) getActivity()).hideProgressBar();
                 if (postResponse.getStatus() == 200) {
+
+                    if (srlContent.isRefreshing()) {
+                        posts.clear();
+                        postAdapter.notifyDataSetChanged();
+                        srlContent.setRefreshing(false);
+                    }
                     posts.addAll(postResponse.getPosts());
+
                     if (isFirstLoading) {
                         postAdapter = new PostAdapter(context, posts);
                         rvNewsfeed.setAdapter(postAdapter);
@@ -97,9 +126,13 @@ public class NewsFeedFragment extends Fragment {
                     else {
                         postAdapter.notifyItemRangeInserted(posts.size(), postResponse.getPosts().size());
                     }
+                    if (postResponse.getPosts().size()==0) {
+                        offset-=limit;
+                    }
                     isFirstLoading = false;
                 }
                 else {
+                    if (srlContent.isRefreshing()) srlContent.setRefreshing(false);
                     Toast.makeText(context, postResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -109,7 +142,15 @@ public class NewsFeedFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        offset = 0;
         posts.clear();
         isFirstLoading = true;
+    }
+
+    @Override
+    public void onRefresh() {
+        offset = 0;
+        isFirstLoading = true;
+        fetchNewsfeed();
     }
 }
