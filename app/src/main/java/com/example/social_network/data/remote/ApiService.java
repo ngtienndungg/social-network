@@ -35,6 +35,9 @@ public interface ApiService {
     @GET("loadprofileinfo")
     Call<ProfileResponse> fetchProfileInfo(@QueryMap Map<String, String> params);
 
+    @GET("loadprofileposts")
+    Call<PostResponse> loadProfilePosts(@QueryMap Map<String, String> params);
+
     @GET("search")
     Call<SearchResponse> search(@QueryMap Map<String, String> params);
 

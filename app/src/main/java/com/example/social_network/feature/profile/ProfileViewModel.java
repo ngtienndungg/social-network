@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.social_network.data.Repository;
 import com.example.social_network.model.GeneralResponse;
+import com.example.social_network.model.post.PostResponse;
 import com.example.social_network.model.profile.ProfileResponse;
 
 import java.util.Map;
@@ -20,6 +21,10 @@ public class ProfileViewModel extends ViewModel {
 
     public LiveData<ProfileResponse> fetchProfileInfo(Map<String, String> params) {
         return repository.fetchProfileInfo(params);
+    }
+
+    public LiveData<PostResponse> getProfilePosts(Map<String, String> params) {
+        return repository.getProfilePosts(params);
     }
 
     public LiveData<GeneralResponse> uploadPost(MultipartBody multipartBody, Boolean isCoverOrProfileImage) {

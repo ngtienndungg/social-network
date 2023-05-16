@@ -262,4 +262,35 @@ public class Repository {
         });
         return posts;
     }
+
+    public LiveData<PostResponse> getProfilePosts(Map<String, String> params) {
+        MutableLiveData<PostResponse> posts = new MutableLiveData<>();
+        Call<PostResponse> call = apiService.loadProfilePosts(params);
+        call.enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+                if (response.isSuccessful()) {
+                    posts.postValue(response.body());
+                } else {
+                    Gson gson = new Gson();
+                    PostResponse postResponse = null;
+                    try {
+                        postResponse = gson.fromJson(response.errorBody().string(), PostResponse.class);
+                    } catch (IOException e) {
+                        ApiError.ErrorMessage errorMessage = ApiError.getErrorFromException(e);
+                        postResponse = new PostResponse(errorMessage.message, errorMessage.status);
+                    }
+                    posts.postValue(postResponse);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
+                PostResponse postResponse = new PostResponse(errorMessage.message, errorMessage.status);
+                posts.postValue(postResponse);
+            }
+        });
+        return posts;
+    }
 }

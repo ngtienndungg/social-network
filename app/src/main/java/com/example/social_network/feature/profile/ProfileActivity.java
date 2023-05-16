@@ -16,12 +16,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.esafirm.imagepicker.features.ImagePicker;
@@ -32,14 +35,19 @@ import com.example.social_network.feature.fullimage.FullImageActivity;
 import com.example.social_network.feature.postupload.PostUploadActivity;
 import com.example.social_network.feature.search.SearchActivity;
 import com.example.social_network.model.GeneralResponse;
+import com.example.social_network.model.post.Post;
+import com.example.social_network.model.post.PostResponse;
 import com.example.social_network.model.profile.ProfileResponse;
 import com.example.social_network.utils.ViewModelFactory;
+import com.example.social_network.utils.adapter.PostAdapter;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import id.zelory.compressor.Compressor;
@@ -47,7 +55,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class ProfileActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
+public class ProfileActivity extends AppCompatActivity implements DialogInterface.OnDismissListener, SwipeRefreshLayout.OnRefreshListener {
 
     private String uid = "", avatarUrl = "", coverUrl = "";
     private int current_state = 0;
@@ -57,12 +65,20 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
     private ImageView ivAvatar, ivCover;
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
-    private RecyclerView recyclerView;
+    private RecyclerView rvProfile;
     private ProgressBar progressBar;
     private ProfileViewModel viewModel;
+    private SwipeRefreshLayout srlPost;
 
     private Boolean isCoverImage = false;
     private ProgressDialog progressDialog;
+
+    private PostAdapter postAdapter;
+
+    private List<Post> posts = new ArrayList<>();
+    private Boolean isFirstLoading = true;
+    private int limit = 5;
+    private int offset = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,14 +90,31 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
         btProfileOption = findViewById(R.id.acbProfile);
         ivAvatar = findViewById(R.id.ivAvatar);
         ivCover = findViewById(R.id.ivCover);
-        recyclerView = findViewById(R.id.rvProfile);
+        rvProfile = findViewById(R.id.rvProfile);
         toolbar = findViewById(R.id.toolbar);
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
         progressBar = findViewById(R.id.progressBar);
+        srlPost = findViewById(R.id.srlPost);
+
+        srlPost.setOnRefreshListener(this);
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(R.string.loading);
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getResources().getString(R.string.please_wait));
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvProfile.setLayoutManager(linearLayoutManager);
+
+        rvProfile.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (isLastItemReached()) {
+                    offset+=limit;
+                    getProfilePosts();
+                }
+            }
+        });
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);
@@ -158,8 +191,51 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                     }
                     btProfileOption.setEnabled(true);
                     loadBtProfileOption();
+                    getProfilePosts();
                 } else {
                     Toast.makeText(ProfileActivity.this, profileResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void getProfilePosts() {
+        Map<String, String> params = new HashMap<>();
+        params.put("uid", uid);
+        params.put("limit", limit + "");
+        params.put("offset", offset + "");
+        params.put("current_state", current_state + "");
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        viewModel.getProfilePosts(params).observe(this, new Observer<PostResponse>() {
+            @Override
+            public void onChanged(PostResponse postResponse) {
+                progressBar.setVisibility(View.GONE);
+                if (postResponse.getStatus() == 200) {
+
+                    if (srlPost.isRefreshing()) {
+                        posts.clear();
+                        postAdapter.notifyDataSetChanged();
+                        srlPost.setRefreshing(false);
+                    }
+                    posts.addAll(postResponse.getPosts());
+
+                    if (isFirstLoading) {
+                        postAdapter = new PostAdapter(ProfileActivity.this, posts);
+                        rvProfile.setAdapter(postAdapter);
+                    }
+                    else {
+                        postAdapter.notifyItemRangeInserted(posts.size(), postResponse.getPosts().size());
+                    }
+                    if (postResponse.getPosts().size()==0) {
+                        offset-=limit;
+                    }
+                    isFirstLoading = false;
+                }
+                else {
+                    if (srlPost.isRefreshing()) srlPost.setRefreshing(false);
+                    Toast.makeText(ProfileActivity.this, postResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -276,6 +352,13 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
         });
     }
 
+    private boolean isLastItemReached() {
+        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvProfile.getLayoutManager();
+        int position = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+        int numberOfItems = postAdapter.getItemCount();
+        return (position >= numberOfItems - 1);
+    }
+
     private void performAction() {
         progressDialog.show();
         viewModel.performAction(new PerformAction(current_state + "", FirebaseAuth.getInstance().getUid(), uid)).observe(this, new Observer<GeneralResponse>() {
@@ -370,6 +453,21 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
     @Override
     public void onDismiss(DialogInterface dialog) {
         btProfileOption.setEnabled(true);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        offset = 0;
+        posts.clear();
+        isFirstLoading = true;
+    }
+
+    @Override
+    public void onRefresh() {
+        offset = 0;
+        isFirstLoading = true;
+        getProfilePosts();
     }
 
     public static class PerformAction {

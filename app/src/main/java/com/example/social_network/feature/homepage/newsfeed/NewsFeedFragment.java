@@ -76,7 +76,6 @@ public class NewsFeedFragment extends Fragment implements SwipeRefreshLayout.OnR
         rvNewsfeed.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
                 if (isLastItemReached()) {
                     offset+=limit;
                     fetchNewsfeed();
