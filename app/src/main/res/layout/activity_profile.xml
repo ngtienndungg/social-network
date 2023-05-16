@@ -36,7 +36,8 @@
                     android:adjustViewBounds="true"
                     android:paddingBottom="80dp"
                     android:scaleType="centerCrop"
-                    app:layout_collapseMode="parallax" />
+                    app:layout_collapseMode="parallax"
+                    android:src="@drawable/cover_default_placeholder"/>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="120dp"

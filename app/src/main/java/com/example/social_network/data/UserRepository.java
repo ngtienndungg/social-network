@@ -7,10 +7,8 @@ import com.example.social_network.data.remote.ApiError;
 import com.example.social_network.data.remote.ApiService;
 import com.example.social_network.feature.auth.LoginActivity;
 import com.example.social_network.feature.profile.ProfileActivity;
-import com.example.social_network.feature.search.SearchViewModel;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.auth.AuthResponse;
-import com.example.social_network.model.friend.Friend;
 import com.example.social_network.model.friend.FriendResponse;
 import com.example.social_network.model.post.PostResponse;
 import com.example.social_network.model.profile.ProfileResponse;
@@ -24,19 +22,19 @@ import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Multipart;
 
-public class Repository {
-    private static Repository instance = null;
+public class UserRepository {
+    private static UserRepository instance = null;
+
     private final ApiService apiService;
 
-    private Repository(ApiService apiService) {
+    private UserRepository(ApiService apiService) {
         this.apiService = apiService;
     }
 
-    public static Repository getRepository(ApiService apiService) {
+    public static UserRepository getRepository(ApiService apiService) {
         if (instance == null) {
-            instance = new Repository(apiService);
+            instance = new UserRepository(apiService);
         }
         return instance;
     }
@@ -100,43 +98,6 @@ public class Repository {
             }
         });
         return userInfo;
-    }
-    public LiveData<GeneralResponse> uploadPost(MultipartBody multipartBody, Boolean isCoverOrProfileImage) {
-        MutableLiveData<GeneralResponse> postUpload = new MutableLiveData<>();
-        Call<GeneralResponse> call = null;
-        if (isCoverOrProfileImage) {
-            call = apiService.uploadImage(multipartBody);
-        }
-        else {
-            call = apiService.uploadPost(multipartBody);
-        }
-        call.enqueue(new Callback<GeneralResponse>() {
-            @Override
-            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
-                if (response.isSuccessful()) {
-                    postUpload.postValue(response.body());
-                }
-                else {
-                    Gson gson = new Gson();
-                    GeneralResponse generalResponse = null;
-                    try {
-                        generalResponse = gson.fromJson(response.errorBody().string(), GeneralResponse.class);
-                    } catch (IOException e) {
-                        ApiError.ErrorMessage errorMessage = ApiError.getErrorFromException(e);
-                        generalResponse = new GeneralResponse(errorMessage.message, errorMessage.status);
-                    }
-                    postUpload.postValue(generalResponse);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GeneralResponse> call, Throwable t) {
-                ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
-                GeneralResponse generalResponse= new GeneralResponse(errorMessage.message, errorMessage.status);
-                postUpload.postValue(generalResponse);
-            }
-        });
-        return postUpload;
     }
 
     public LiveData<SearchResponse> search(Map<String, String> params) {
@@ -230,67 +191,5 @@ public class Repository {
             }
         });
         return searchInfo;
-    }
-
-    public LiveData<PostResponse> getNewsfeed(Map<String, String> params) {
-        MutableLiveData<PostResponse> posts = new MutableLiveData<>();
-        Call<PostResponse> call = apiService.getNewsfeed(params);
-        call.enqueue(new Callback<PostResponse>() {
-            @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
-                if (response.isSuccessful()) {
-                    posts.postValue(response.body());
-                } else {
-                    Gson gson = new Gson();
-                    PostResponse postResponse = null;
-                    try {
-                        postResponse = gson.fromJson(response.errorBody().string(), PostResponse.class);
-                    } catch (IOException e) {
-                        ApiError.ErrorMessage errorMessage = ApiError.getErrorFromException(e);
-                        postResponse = new PostResponse(errorMessage.message, errorMessage.status);
-                    }
-                    posts.postValue(postResponse);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
-                ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
-                PostResponse postResponse = new PostResponse(errorMessage.message, errorMessage.status);
-                posts.postValue(postResponse);
-            }
-        });
-        return posts;
-    }
-
-    public LiveData<PostResponse> getProfilePosts(Map<String, String> params) {
-        MutableLiveData<PostResponse> posts = new MutableLiveData<>();
-        Call<PostResponse> call = apiService.loadProfilePosts(params);
-        call.enqueue(new Callback<PostResponse>() {
-            @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
-                if (response.isSuccessful()) {
-                    posts.postValue(response.body());
-                } else {
-                    Gson gson = new Gson();
-                    PostResponse postResponse = null;
-                    try {
-                        postResponse = gson.fromJson(response.errorBody().string(), PostResponse.class);
-                    } catch (IOException e) {
-                        ApiError.ErrorMessage errorMessage = ApiError.getErrorFromException(e);
-                        postResponse = new PostResponse(errorMessage.message, errorMessage.status);
-                    }
-                    posts.postValue(postResponse);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
-                ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
-                PostResponse postResponse = new PostResponse(errorMessage.message, errorMessage.status);
-                posts.postValue(postResponse);
-            }
-        });
-        return posts;
     }
 }

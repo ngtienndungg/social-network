@@ -23,7 +23,13 @@ public class FullImageActivity extends AppCompatActivity {
         PhotoView photoView = findViewById(R.id.photoView);
 
         if (uri.getAuthority()==null) {
-            image = ApiClient.BASE_URL + image;
+            if (image.contains("../")) {
+                image = ApiClient.BASE_URL + image;
+                Glide.with(this).load(image).into(photoView);
+            }
+            else {
+                Glide.with(this).load(Integer.parseInt(image)).into(photoView);
+            }
         }
 
         Glide.with(this).load(image).into(photoView);

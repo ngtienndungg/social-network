@@ -124,7 +124,7 @@ public class PostUploadActivity extends AppCompatActivity {
     }
 
     private void selectImage() {
-        ImagePicker.create(this).single().start();
+        ImagePicker.create(this).single().folderMode(true).start();
     }
 
     @Override

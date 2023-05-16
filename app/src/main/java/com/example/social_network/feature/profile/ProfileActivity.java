@@ -164,7 +164,10 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                         if (avatarUri.getAuthority() == null) {
                             avatarUrl = ApiClient.BASE_URL + avatarUrl;
                         }
-                        Glide.with(ProfileActivity.this).load(avatarUrl).into(ivAvatar);
+                        Glide.with(ProfileActivity.this).load(avatarUrl).placeholder(R.drawable.default_profile_placeholder).into(ivAvatar);
+                    }
+                    else {
+                        avatarUrl = R.drawable.default_profile_placeholder + "";
                     }
 
                     if (!coverUrl.isEmpty()) {
@@ -172,7 +175,10 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                         if (coverUri.getAuthority() == null) {
                             coverUrl = ApiClient.BASE_URL + coverUrl;
                         }
-                        Glide.with(ProfileActivity.this).load(coverUrl).into(ivCover);
+                        Glide.with(ProfileActivity.this).load(coverUrl).placeholder(R.drawable.cover_default_placeholder).into(ivCover);
+                    }
+                    else {
+                        coverUrl = R.drawable.cover_default_placeholder + "";
                     }
                     if (current_state == 0) {
                         btProfileOption.setText(R.string.loading);
@@ -406,7 +412,7 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
     }
 
     private void selectImage() {
-        ImagePicker.create(this).single().start();
+        ImagePicker.create(this).single().folderMode(true).start();
     }
 
     @Override
@@ -440,10 +446,10 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                 Toast.makeText(ProfileActivity.this, generalResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 if (generalResponse.getStatus() == 200) {
                     if (isCoverImage) {
-                        Glide.with(ProfileActivity.this).load(ApiClient.BASE_URL + generalResponse.getExtra()).into(ivCover);
+                        Glide.with(ProfileActivity.this).load(ApiClient.BASE_URL + generalResponse.getExtra()).placeholder(R.drawable.cover_default_placeholder).into(ivCover);
                     }
                     else {
-                        Glide.with(ProfileActivity.this).load(ApiClient.BASE_URL + generalResponse.getExtra()).into(ivAvatar);
+                        Glide.with(ProfileActivity.this).load(ApiClient.BASE_URL + generalResponse.getExtra()).placeholder(R.drawable.default_profile_placeholder).into(ivAvatar);
                     }
                 }
             }
