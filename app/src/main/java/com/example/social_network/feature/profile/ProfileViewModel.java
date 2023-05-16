@@ -8,6 +8,8 @@ import com.example.social_network.data.UserRepository;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.post.PostResponse;
 import com.example.social_network.model.profile.ProfileResponse;
+import com.example.social_network.model.reaction.ReactResponse;
+import com.example.social_network.utils.Util;
 
 import java.util.Map;
 
@@ -36,5 +38,9 @@ public class ProfileViewModel extends ViewModel {
 
     public LiveData<GeneralResponse> performAction(ProfileActivity.PerformAction performAction) {
         return userRepository.performOperation(performAction);
+    }
+
+    public LiveData<ReactResponse> performReaction(Util.PerformReaction performReaction) {
+        return postRepository.performReaction(performReaction);
     }
 }

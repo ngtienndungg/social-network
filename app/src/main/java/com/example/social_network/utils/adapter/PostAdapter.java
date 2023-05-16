@@ -13,10 +13,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amrdeveloper.reactbutton.FbReactions;
+import com.amrdeveloper.reactbutton.ReactButton;
 import com.bumptech.glide.Glide;
 import com.example.social_network.R;
 import com.example.social_network.data.remote.ApiClient;
 import com.example.social_network.model.post.Post;
+import com.example.social_network.model.reaction.Reaction;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -25,9 +29,26 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private Context context;
     List<Post> posts;
 
+    public interface IUpdateUserReaction {
+        void updateUserReaction(String uid,
+                                int postId,
+                                String postOwnerId,
+                                String previousReactionType,
+                                String newReactionType,
+                                int adapterPosition);
+    }
+
+    IUpdateUserReaction iUpdateUserReaction;
+
     public PostAdapter(Context context, List<Post> posts) {
         this.context = context;
         this.posts = posts;
+        if (context instanceof IUpdateUserReaction) {
+            iUpdateUserReaction = (IUpdateUserReaction) context;
+        }
+        else {
+            throw new RuntimeException(context.toString() + "must implement IUpdateUserReaction");
+        }
     }
 
     @NonNull
@@ -52,6 +73,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         else {
             holder.ivPrivacy.setImageResource(R.drawable.ic_public);
         }
+        holder.rbReaction.setCurrentReaction(FbReactions.getReaction(post.getReactionType()));
 
         String profileImage = post.getProfileUrl();
 
@@ -83,10 +105,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         return posts.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public void updatePostAfterReaction(int adapterPosition, Reaction reaction) {
+        Post post = posts.get(adapterPosition);
+
+        post.setLikeCount(reaction.getLikeCount());
+        post.setLoveCount(reaction.getLoveCount());
+        post.setCareCount(reaction.getCareCount());
+        post.setHahaCount(reaction.getHahaCount());
+        post.setWowCount(reaction.getWowCount());
+        post.setSadCount(reaction.getSadCount());
+        post.setAngryCount(reaction.getAngryCount());
+
+        posts.set(adapterPosition, post);
+        notifyItemChanged(adapterPosition, post);
+    }
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         private ImageView ivProfile, ivPrivacy, ivStatusImage;
         private TextView tvName, tvDate, tvPost;
+        ReactButton rbReaction;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,6 +134,38 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             tvDate = itemView.findViewById(R.id.tvDate);
             tvPost = itemView.findViewById(R.id.tvPost);
             tvName = itemView.findViewById(R.id.tvName);
+            rbReaction = itemView.findViewById(R.id.rbReaction);
+
+            rbReaction.setReactClickListener(this);
+            rbReaction.setReactDismissListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onReactionChanged(v);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            onReactionChanged(v);
+            return false;
+        }
+
+        private void onReactionChanged(View v) {
+            String previousReactionType = posts.get(getAdapterPosition()).getReactionType();
+            String newReactionType = ((ReactButton) v).getCurrentReaction().getReactType();
+
+            if (!previousReactionType.contentEquals(newReactionType)) {
+                iUpdateUserReaction.updateUserReaction(
+                        FirebaseAuth.getInstance().getUid(),
+                        posts.get(getAdapterPosition()).getPostId(),
+                        posts.get(getAdapterPosition()).getPostUserId(),
+                        previousReactionType,
+                        newReactionType,
+                        getAdapterPosition()
+                );
+            }
         }
     }
+
 }

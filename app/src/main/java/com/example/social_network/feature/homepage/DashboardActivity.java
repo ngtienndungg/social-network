@@ -27,11 +27,12 @@ import com.example.social_network.feature.search.SearchActivity;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.friend.FriendResponse;
 import com.example.social_network.utils.ViewModelFactory;
+import com.example.social_network.utils.adapter.PostAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class DashboardActivity extends AppCompatActivity implements RequestAdapter.IPerformAction {
+public class DashboardActivity extends AppCompatActivity implements RequestAdapter.IPerformAction, PostAdapter.IUpdateUserReaction {
 
     private BottomNavigationView bottomNavigationView;
     private FriendsFragment friendsFragment;
@@ -123,5 +124,10 @@ public class DashboardActivity extends AppCompatActivity implements RequestAdapt
                 }
             }
         });
+    }
+
+    @Override
+    public void updateUserReaction(String uid, int postId, String postOwnerId, String previousReactionType, String newReactionType, int adapterPosition) {
+
     }
 }

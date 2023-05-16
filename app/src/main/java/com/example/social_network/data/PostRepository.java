@@ -7,6 +7,8 @@ import com.example.social_network.data.remote.ApiError;
 import com.example.social_network.data.remote.ApiService;
 import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.post.PostResponse;
+import com.example.social_network.model.reaction.ReactResponse;
+import com.example.social_network.utils.Util;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -128,6 +130,37 @@ public class PostRepository {
                 ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
                 PostResponse postResponse = new PostResponse(errorMessage.message, errorMessage.status);
                 posts.postValue(postResponse);
+            }
+        });
+        return posts;
+    }
+
+    public LiveData<ReactResponse> performReaction(Util.PerformReaction performReaction) {
+        MutableLiveData<ReactResponse> posts = new MutableLiveData<>();
+        Call<ReactResponse> call = apiService.performReaction(performReaction);
+        call.enqueue(new Callback<ReactResponse>() {
+            @Override
+            public void onResponse(Call<ReactResponse> call, Response<ReactResponse> response) {
+                if (response.isSuccessful()) {
+                    posts.postValue(response.body());
+                } else {
+                    Gson gson = new Gson();
+                    ReactResponse reactResponse = null;
+                    try {
+                        reactResponse = gson.fromJson(response.errorBody().string(), ReactResponse.class);
+                    } catch (IOException e) {
+                        ApiError.ErrorMessage errorMessage = ApiError.getErrorFromException(e);
+                        reactResponse = new ReactResponse(errorMessage.message, errorMessage.status);
+                    }
+                    posts.postValue(reactResponse);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReactResponse> call, Throwable t) {
+                ApiError.ErrorMessage errorMessage = ApiError.getErrorMessageFromThrowable(t);
+                ReactResponse reactResponse = new ReactResponse(errorMessage.message, errorMessage.status);
+                posts.postValue(reactResponse);
             }
         });
         return posts;

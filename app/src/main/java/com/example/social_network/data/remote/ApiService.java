@@ -7,7 +7,9 @@ import com.example.social_network.model.auth.AuthResponse;
 import com.example.social_network.model.friend.FriendResponse;
 import com.example.social_network.model.post.PostResponse;
 import com.example.social_network.model.profile.ProfileResponse;
+import com.example.social_network.model.reaction.ReactResponse;
 import com.example.social_network.model.search.SearchResponse;
+import com.example.social_network.utils.Util;
 
 import java.util.Map;
 
@@ -22,6 +24,9 @@ import retrofit2.http.QueryMap;
 public interface ApiService {
     @POST("login")
     Call<AuthResponse> login(@Body LoginActivity.UserInfo userInfo);
+
+    @POST("performreaction")
+    Call<ReactResponse> performReaction(@Body Util.PerformReaction performReaction);
 
     @POST("uploadpost")
     Call<GeneralResponse> uploadPost(@Body MultipartBody body);

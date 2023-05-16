@@ -38,6 +38,8 @@ import com.example.social_network.model.GeneralResponse;
 import com.example.social_network.model.post.Post;
 import com.example.social_network.model.post.PostResponse;
 import com.example.social_network.model.profile.ProfileResponse;
+import com.example.social_network.model.reaction.ReactResponse;
+import com.example.social_network.utils.Util;
 import com.example.social_network.utils.ViewModelFactory;
 import com.example.social_network.utils.adapter.PostAdapter;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -55,7 +57,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class ProfileActivity extends AppCompatActivity implements DialogInterface.OnDismissListener, SwipeRefreshLayout.OnRefreshListener {
+public class ProfileActivity extends AppCompatActivity implements DialogInterface.OnDismissListener, SwipeRefreshLayout.OnRefreshListener, PostAdapter.IUpdateUserReaction {
 
     private String uid = "", avatarUrl = "", coverUrl = "";
     private int current_state = 0;
@@ -474,6 +476,21 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
         offset = 0;
         isFirstLoading = true;
         getProfilePosts();
+    }
+
+    @Override
+    public void updateUserReaction(String uid, int postId, String postOwnerId, String previousReactionType, String newReactionType, int adapterPosition) {
+        viewModel.performReaction(new Util.PerformReaction(uid, postId + "", postOwnerId, previousReactionType, newReactionType)).observe(this, new Observer<ReactResponse>() {
+            @Override
+            public void onChanged(ReactResponse reactResponse) {
+                if (reactResponse.getStatus() == 200) {
+                    postAdapter.updatePostAfterReaction(adapterPosition, reactResponse.getReaction());
+                } 
+                else {
+                    Toast.makeText(ProfileActivity.this, reactResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public static class PerformAction {
