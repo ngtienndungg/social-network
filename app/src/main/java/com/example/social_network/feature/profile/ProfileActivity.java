@@ -31,6 +31,7 @@ import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.example.social_network.R;
 import com.example.social_network.data.remote.ApiClient;
+import com.example.social_network.feature.auth.LoginActivity;
 import com.example.social_network.feature.fullimage.FullImageActivity;
 import com.example.social_network.feature.postupload.PostUploadActivity;
 import com.example.social_network.feature.search.SearchActivity;
@@ -260,7 +261,8 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                             getResources().getString(R.string.option_change_cover),
                             getResources().getString(R.string.option_profile_image),
                             getResources().getString(R.string.option_view_cover),
-                            getResources().getString(R.string.option_view_avatar)};
+                            getResources().getString(R.string.option_view_avatar),
+                            "Sign out"};
                     AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
                     builder.setTitle(R.string.choose_options);
                     builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -276,6 +278,10 @@ public class ProfileActivity extends AppCompatActivity implements DialogInterfac
                                 viewFullImage(ivCover, coverUrl);
                             } else if (which == 3) {
                                 viewFullImage(ivAvatar, avatarUrl);
+                            }
+                            else {
+                                FirebaseAuth.getInstance().signOut();
+                                startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
                             }
                         }
                     });

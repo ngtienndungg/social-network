@@ -73,7 +73,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         else {
             holder.ivPrivacy.setImageResource(R.drawable.ic_public);
         }
-        holder.rbReaction.setCurrentReaction(FbReactions.getReaction(post.getReactionType()));
+       // holder.rbReaction.setCurrentReaction(FbReactions.getReaction(post.getReactionType()));
 
         String profileImage = post.getProfileUrl();
 
